@@ -1,79 +1,78 @@
-import './bootstrap';
-import moment from 'moment';
-import VueTrumbowyg from 'vue-trumbowyg';
-import 'trumbowyg/dist/ui/trumbowyg.css';
-import 'trumbowyg/dist/plugins/colors/trumbowyg.colors';
-import 'trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css';
-import 'trumbowyg/dist/plugins/base64/trumbowyg.base64.min.js';
-import 'trumbowyg/dist/plugins/upload/trumbowyg.upload.js';
-import 'trumbowyg/dist/plugins/noembed/trumbowyg.noembed.js';
-import 'trumbowyg/dist/plugins/pasteembed/trumbowyg.pasteembed.js';
-import 'trumbowyg/dist/plugins/table/ui/trumbowyg.table.css';
-import 'trumbowyg/dist/plugins/table/trumbowyg.table.js';
-import '../../overrides/trumbowyg.template';
-import '../../overrides/trumbowyg.reupload';
-import '../../overrides/trumbowyg.edit-embed-template';
+import "./bootstrap";
+import moment from "moment";
+import VueTrumbowyg from "vue-trumbowyg";
+import "trumbowyg/dist/ui/trumbowyg.css";
+import "trumbowyg/dist/plugins/colors/trumbowyg.colors";
+import "trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css";
+import "trumbowyg/dist/plugins/base64/trumbowyg.base64.min.js";
+import "trumbowyg/dist/plugins/upload/trumbowyg.upload.js";
+import "trumbowyg/dist/plugins/noembed/trumbowyg.noembed.js";
+import "trumbowyg/dist/plugins/pasteembed/trumbowyg.pasteembed.js";
+import "trumbowyg/dist/plugins/table/ui/trumbowyg.table.css";
+import "trumbowyg/dist/plugins/table/trumbowyg.table.js";
+import "../../overrides/trumbowyg.template";
+import "../../overrides/trumbowyg.reupload";
+import "../../overrides/trumbowyg.edit-embed-template";
 import UserDetailTooltip from "../Listing/components/UserDetailTooltip";
-Vue.component('wysiwyg', VueTrumbowyg);
+Vue.component("wysiwyg", VueTrumbowyg);
+
+const omit = (obj, keys) =>
+  Object.fromEntries(Object.entries(obj).filter(([k]) => !keys.includes(k)));
+
+const isEmpty = (obj) =>
+  [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
 
 const BaseForm = {
   props: {
     action: {
       type: String,
-      required: true
+      required: true,
     },
     locales: {
-      type: Array
+      type: Array,
     },
     defaultLocale: {
       type: String,
-      default: function() {
-        return this.locales instanceof Array && this.locales.length > 0
-          ? this.locales[0]
-          : '';
-      }
+      default: function () {
+        return this.locales instanceof Array && this.locales.length > 0 ? this.locales[0] : "";
+      },
     },
     sendEmptyLocales: {
       type: Boolean,
-      default: function() {
+      default: function () {
         return true;
-      }
+      },
     },
     data: {
       type: Object,
-      default: function() {
+      default: function () {
         return {};
-      }
+      },
     },
     responsiveBreakpoint: {
       type: Number,
-      default: 850
-    }
+      default: 850,
+    },
   },
   components: {
-      'user-detail-tooltip': UserDetailTooltip
+    "user-detail-tooltip": UserDetailTooltip,
   },
 
-  created: function() {
+  created: function () {
     if (!!this.locales && this.locales.length > 0) {
       let form = this.form;
-      // this.locales.map(function(l) {
-      //     if (!_.has(form, l)) {
-      //         _.set(form, l, {})
-      //     }
-      // })
       this.currentLocale = this.defaultLocale;
     }
 
     //FIXME: now we can't add dynamic input in update type of form
-    if (!_.isEmpty(this.data)) {
+    if (!isEmpty(this.data)) {
       this.form = this.data;
     }
 
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener("resize", this.onResize);
   },
 
-  data: function() {
+  data: function () {
     const that = this;
 
     return {
@@ -81,82 +80,77 @@ const BaseForm = {
       wysiwygMedia: [],
       mediaCollections: [],
       isFormLocalized: false,
-      currentLocale: '',
+      currentLocale: "",
       submiting: false,
       onSmallScreen: window.innerWidth < this.responsiveBreakpoint,
       datePickerConfig: {
-        dateFormat: 'Y-m-d H:i:S',
+        dateFormat: "Y-m-d H:i:S",
         altInput: true,
-        altFormat: 'd.m.Y',
-        locale: null
+        altFormat: "d.m.Y",
+        locale: null,
       },
       timePickerConfig: {
         enableTime: true,
         noCalendar: true,
         time_24hr: true,
         enableSeconds: true,
-        dateFormat: 'H:i:S',
+        dateFormat: "H:i:S",
         altInput: true,
-        altFormat: 'H:i:S',
-        locale: null
+        altFormat: "H:i:S",
+        locale: null,
       },
       datetimePickerConfig: {
         enableTime: true,
         time_24hr: true,
         enableSeconds: true,
-        dateFormat: 'Y-m-d H:i:S',
+        dateFormat: "Y-m-d H:i:S",
         altInput: true,
-        altFormat: 'd.m.Y H:i:S',
-        locale: null
+        altFormat: "d.m.Y H:i:S",
+        locale: null,
       },
       wysiwygConfig: {
-        placeholder: 'Type a text here',
+        placeholder: "Type a text here",
         modules: {
           toolbar: {
             container: [
               [{ header: [1, 2, 3, 4, 5, 6, false] }],
-              ['bold', 'italic', 'underline', 'strike'],
-              [{ list: 'ordered' }, { list: 'bullet' }],
+              ["bold", "italic", "underline", "strike"],
+              [{ list: "ordered" }, { list: "bullet" }],
               [{ color: [] }, { background: [] }],
               [{ align: [] }],
-              ['link', 'image'],
-              ['clean']
-            ]
-          }
-        }
+              ["link", "image"],
+              ["clean"],
+            ],
+          },
+        },
       },
       mediaWysiwygConfig: {
         autogrow: true,
         imageWidthModalEdit: true,
         btnsDef: {
           image: {
-            dropdown: ['insertImage', 'upload', 'base64'],
-            ico: 'insertImage'
+            dropdown: ["insertImage", "upload", "base64"],
+            ico: "insertImage",
           },
           align: {
-            dropdown: [
-              'justifyLeft',
-              'justifyCenter',
-              'justifyRight',
-              'justifyFull'
-            ],
-            ico: 'justifyLeft'
-          }
+            dropdown: ["justifyLeft", "justifyCenter", "justifyRight", "justifyFull"],
+            ico: "justifyLeft",
+          },
         },
         btns: [
-          ['formatting'],
-          ['strong', 'em', 'del'],
-          ['align'],
-          ['unorderedList', 'orderedList', 'table'],
-          ['foreColor', 'backColor'],
-          ['link', 'noembed', 'image'],
-          ['template'],
-          ['fullscreen', 'viewHTML']
+          ["formatting"],
+          ["strong", "em", "del"],
+          ["align"],
+          ["unorderedList", "orderedList", "table"],
+          ["foreColor", "backColor"],
+          ["link", "noembed", "image"],
+          ["template"],
+          ["fullscreen", "viewHTML"],
         ],
         plugins: {
           upload: {
             // https://alex-d.github.io/Trumbowyg/documentation/plugins/#plugin-upload
-            serverPath: '/admin/wysiwyg-media',
+            serverPath: "/admin/wysiwyg-media",
             imageWidthModalEdit: true,
             success(data, trumbowyg, $modal, values) {
               that.wysiwygMedia.push(data.mediaId);
@@ -170,106 +164,83 @@ const BaseForm = {
                     return object[mainProperty];
                   }
 
-                  if (typeof object === 'object') {
+                  if (typeof object === "object") {
                     return getDeep(object[mainProperty], otherProperties);
                   }
                 }
                 return object;
               }
 
-              if (
-                !!getDeep(
-                  data,
-                  trumbowyg.o.plugins.upload.statusPropertyName.split('.')
-                )
-              ) {
-                var url = getDeep(
-                  data,
-                  trumbowyg.o.plugins.upload.urlPropertyName.split('.')
-                );
-                trumbowyg.execCmd('insertImage', url, false, true);
-                var $img = $(
-                  'img[src="' + url + '"]:not([alt])',
-                  trumbowyg.$box
-                );
-                $img.attr('alt', values.alt);
-                if (
-                  trumbowyg.o.imageWidthModalEdit &&
-                  parseInt(values.width) > 0
-                ) {
+              if (!!getDeep(data, trumbowyg.o.plugins.upload.statusPropertyName.split("."))) {
+                var url = getDeep(data, trumbowyg.o.plugins.upload.urlPropertyName.split("."));
+                trumbowyg.execCmd("insertImage", url, false, true);
+                var $img = $('img[src="' + url + '"]:not([alt])', trumbowyg.$box);
+                $img.attr("alt", values.alt);
+                if (trumbowyg.o.imageWidthModalEdit && parseInt(values.width) > 0) {
                   $img.attr({
-                    width: values.width
+                    width: values.width,
                   });
                 }
-                setTimeout(function() {
+                setTimeout(function () {
                   trumbowyg.closeModal();
                 }, 250);
-                trumbowyg.$c.trigger('tbwuploadsuccess', [
-                  trumbowyg,
-                  data,
-                  url
-                ]);
+                trumbowyg.$c.trigger("tbwuploadsuccess", [trumbowyg, data, url]);
               } else {
                 trumbowyg.addErrorOnModalField(
-                  $('input[type=file]', $modal),
+                  $("input[type=file]", $modal),
                   trumbowyg.lang[data.message]
                 );
-                trumbowyg.$c.trigger('tbwuploaderror', [trumbowyg, data]);
+                trumbowyg.$c.trigger("tbwuploaderror", [trumbowyg, data]);
               }
-            }
+            },
           },
           reupload: {
             success(data, trumbowyg, $modal, values, $img) {
               that.wysiwygMedia.push(data.mediaId);
 
               $img.attr({
-                src: data.file
+                src: data.file,
               });
-              trumbowyg.execCmd('insertHTML');
-              setTimeout(function() {
+              trumbowyg.execCmd("insertHTML");
+              setTimeout(function () {
                 trumbowyg.closeModal();
               }, 250);
-              var url = getDeep(
-                data,
-                trumbowyg.o.plugins.upload.urlPropertyName.split('.')
-              );
-              trumbowyg.$c.trigger('tbwuploadsuccess', [trumbowyg, data, url]);
-            }
-          }
-        }
-      }
+              var url = getDeep(data, trumbowyg.o.plugins.upload.urlPropertyName.split("."));
+              trumbowyg.$c.trigger("tbwuploadsuccess", [trumbowyg, data, url]);
+            },
+          },
+        },
+      },
     };
   },
 
   computed: {
-    otherLocales: function() {
-      return this.locales.filter(x => x != this.defaultLocale);
+    otherLocales: function () {
+      return this.locales.filter((x) => x != this.defaultLocale);
     },
-    showLocalizedValidationError: function() {
+    showLocalizedValidationError: function () {
       // TODO ked sme neni na mobile, tak pozerat zo vsetkych
-      return this.otherLocales.some(lang => {
-        return this.errors.items.some(item => {
-          return (
-            item.field.endsWith('_' + lang) || item.field.startsWith(lang + '_')
-          );
+      return this.otherLocales.some((lang) => {
+        return this.errors.items.some((item) => {
+          return item.field.endsWith("_" + lang) || item.field.startsWith(lang + "_");
         });
       });
-    }
+    },
   },
   filters: {
-      date: function (date, format = 'YYYY-MM-DD') {
-          var date = moment(date);
-          return date.isValid() ? date.format(format) : "";
-      },
-      datetime: function (datetime, format = 'YYYY-MM-DD HH:mm:ss') {
-          var date = moment(datetime);
-          return date.isValid() ? date.format(format) : "";
-      },
-      time: function (time, format = 'HH:mm:ss') {
-          // '2000-01-01' is here just because momentjs needs a date
-          var date = moment('2000-01-01 ' + time);
-          return date.isValid() ? date.format(format) : "";
-      }
+    date: function (date, format = "YYYY-MM-DD") {
+      var date = moment(date);
+      return date.isValid() ? date.format(format) : "";
+    },
+    datetime: function (datetime, format = "YYYY-MM-DD HH:mm:ss") {
+      var date = moment(datetime);
+      return date.isValid() ? date.format(format) : "";
+    },
+    time: function (time, format = "HH:mm:ss") {
+      // '2000-01-01' is here just because momentjs needs a date
+      var date = moment("2000-01-01 " + time);
+      return date.isValid() ? date.format(format) : "";
+    },
   },
   methods: {
     getPostData() {
@@ -283,33 +254,31 @@ const BaseForm = {
             );
           }
 
-          if (this.$refs[collection + '_uploader']) {
-            this.form[collection] = this.$refs[
-              collection + '_uploader'
-            ].getFiles();
+          if (this.$refs[collection + "_uploader"]) {
+            this.form[collection] = this.$refs[collection + "_uploader"].getFiles();
           }
         });
       }
-      this.form['wysiwygMedia'] = this.wysiwygMedia;
+      this.form["wysiwygMedia"] = this.wysiwygMedia;
 
       return this.form;
     },
     onSubmit() {
-      return this.$validator.validateAll().then(result => {
+      return this.$validator.validateAll().then((result) => {
         if (!result) {
           this.$notify({
-            type: 'error',
-            title: 'Error!',
-            text: 'The form contains invalid fields.'
+            type: "error",
+            title: "Error!",
+            text: "The form contains invalid fields.",
           });
           return false;
         }
 
         var data = this.form;
         if (!this.sendEmptyLocales) {
-          data = _.omit(
+          data = omit(
             this.form,
-            this.locales.filter(locale => _.isEmpty(this.form[locale]))
+            this.locales.filter((locale) => isEmpty(this.form[locale]))
           );
         }
 
@@ -317,8 +286,8 @@ const BaseForm = {
 
         axios
           .post(this.action, this.getPostData())
-          .then(response => this.onSuccess(response.data))
-          .catch(errors => this.onFail(errors.response.data));
+          .then((response) => this.onSuccess(response.data))
+          .catch((errors) => this.onFail(errors.response.data));
       });
     },
     onSuccess(data) {
@@ -329,37 +298,37 @@ const BaseForm = {
     },
     onFail(data) {
       this.submiting = false;
-      if(typeof data.errors !== typeof undefined) {
+      if (typeof data.errors !== typeof undefined) {
         var bag = this.$validator.errors;
         bag.clear();
-        Object.keys(data.errors).map(key => {
-          var splitted = key.split('.', 2);
+        Object.keys(data.errors).map((key) => {
+          var splitted = key.split(".", 2);
           // we assume that first dot divides column and locale (TODO maybe refactor this and make it more general)
           if (splitted.length > 1) {
             bag.add({
-              field: splitted[0] + '_' + splitted[1],
-              msg: data.errors[key][0]
+              field: splitted[0] + "_" + splitted[1],
+              msg: data.errors[key][0],
             });
           } else {
             bag.add({
               field: key,
-              msg: data.errors[key][0]
+              msg: data.errors[key][0],
             });
           }
         });
         if (typeof data.message === typeof undefined) {
           this.$notify({
-            type: 'error',
-            title: 'Error!',
-            text: 'The form contains invalid fields.'
+            type: "error",
+            title: "Error!",
+            text: "The form contains invalid fields.",
           });
         }
       }
       if (typeof data.message !== typeof undefined) {
         this.$notify({
-          type: 'error',
-          title: 'Error!',
-          text: data.message
+          type: "error",
+          title: "Error!",
+          text: data.message,
         });
       }
     },
@@ -373,11 +342,11 @@ const BaseForm = {
     showLocalization() {
       this.isFormLocalized = true;
       this.currentLocale = this.otherLocales[0];
-      $('.container-xl').addClass('width-auto');
+      $(".container-xl").addClass("width-auto");
     },
     hideLocalization() {
       this.isFormLocalized = false;
-      $('.container-xl').removeClass('width-auto');
+      $(".container-xl").removeClass("width-auto");
     },
     validate(event) {
       this.$validator.errors.remove(event.target.name);
@@ -393,8 +362,8 @@ const BaseForm = {
     },
     onResize() {
       this.onSmallScreen = window.innerWidth < this.responsiveBreakpoint;
-    }
-  }
+    },
+  },
 };
 
 export default BaseForm;

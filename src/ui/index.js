@@ -10,17 +10,6 @@ $(function () {
     }
   });
 
-  // dropdown Menu
-  $(".dropdown-toggle").on("click", function () {
-    $(this).parent().toggleClass("open");
-  });
-  $(".dropdown-item").on("click", function () {
-    $(this).closest(".open").removeClass("open");
-  });
-  $(".dropdown-menu").on("mouseleave", function () {
-    $(this).parent(".dropdown").removeClass("open");
-  });
-
   // remove empty nav titles when no children there
   $(".nav-title")
     .filter(function () {
