@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 require("./bootstrap");
 
 var _moment = require("moment");
@@ -47,6 +49,15 @@ var _UserDetailTooltip2 = _interopRequireDefault(_UserDetailTooltip);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 Vue.component("wysiwyg", _vueTrumbowyg2.default);
+
+var omit = function omit(obj, keys) {
+  return Object.fromEntries(Object.entries(obj).filter(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 1),
+        k = _ref2[0];
+
+    return !keys.includes(k);
+  }));
+};
 
 var isEmpty = function isEmpty(obj) {
   return [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length;
@@ -298,7 +309,7 @@ var BaseForm = {
 
         var data = _this4.form;
         if (!_this4.sendEmptyLocales) {
-          data = _.omit(_this4.form, _this4.locales.filter(function (locale) {
+          data = omit(_this4.form, _this4.locales.filter(function (locale) {
             return isEmpty(_this4.form[locale]);
           }));
         }
