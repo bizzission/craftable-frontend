@@ -244,9 +244,10 @@ const BaseForm = {
   },
   methods: {
     getPostData() {
+      let form = { ...this.form };
       if (this.mediaCollections) {
         this.mediaCollections.forEach((collection, index, arr) => {
-          if (this.form[collection]) {
+          if (form[collection]) {
             console.warn(
               "MediaUploader warning: Media input must have a unique name, '" +
                 collection +
@@ -255,13 +256,13 @@ const BaseForm = {
           }
 
           if (this.$refs[collection + "_uploader"]) {
-            this.form[collection] = this.$refs[collection + "_uploader"].getFiles();
+            form[collection] = this.$refs[collection + "_uploader"].getFiles();
           }
         });
       }
-      this.form["wysiwygMedia"] = this.wysiwygMedia;
+      form["wysiwygMedia"] = this.wysiwygMedia;
 
-      return this.preparePayload(this.form);
+      return this.preparePayload(form);
     },
 
     preparePayload(form) {

@@ -3,28 +3,21 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _moment = require("moment");
-
-var _moment2 = _interopRequireDefault(_moment);
+var _moment = _interopRequireDefault(require("moment"));
 
 require("moment-timezone");
 
-var _Pagination = require("./components/Pagination");
+var _Pagination = _interopRequireDefault(require("./components/Pagination"));
 
-var _Pagination2 = _interopRequireDefault(_Pagination);
-
-var _Sortable = require("./components/Sortable");
-
-var _Sortable2 = _interopRequireDefault(_Sortable);
+var _Sortable = _interopRequireDefault(require("./components/Sortable"));
 
 var _vTooltip = require("v-tooltip");
 
-var _UserDetailTooltip = require("./components/UserDetailTooltip");
+var _UserDetailTooltip = _interopRequireDefault(require("./components/UserDetailTooltip"));
 
-var _UserDetailTooltip2 = _interopRequireDefault(_UserDetailTooltip);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 Vue.directive("tooltip", _vTooltip.VTooltip);
 Vue.directive("close-popover", _vTooltip.VClosePopover);
@@ -32,24 +25,30 @@ Vue.component("v-popover", _vTooltip.VPopover);
 
 var pickBy = function pickBy(object) {
   var obj = {};
+
   for (var key in object) {
     if (object[key]) {
       obj[key] = object[key];
     }
   }
+
   return obj;
 };
 
-exports.default = {
+var _default2 = {
   data: function data() {
     return {
       pagination: {
         state: {
-          per_page: this.$cookie.get("per_page") || 10, // required
-          current_page: 1, // required
-          last_page: 1, // required
+          per_page: this.$cookie.get("per_page") || 10,
+          // required
+          current_page: 1,
+          // required
+          last_page: 1,
+          // required
           from: 1,
           to: 10 // required
+
         },
         options: {
           alwaysShowPrevNext: true
@@ -62,7 +61,7 @@ exports.default = {
       filters: {},
       search: "",
       collection: null,
-      now: (0, _moment2.default)().tz(this.timezone).format("YYYY-MM-DD HH:mm:ss"),
+      now: (0, _moment["default"])().tz(this.timezone).format("YYYY-MM-DD HH:mm:ss"),
       datetimePickerConfig: {
         enableTime: true,
         time_24hr: true,
@@ -85,20 +84,20 @@ exports.default = {
     },
     data: {
       type: Object,
-      default: function _default() {
+      "default": function _default() {
         return null;
       }
     },
     timezone: {
       type: String,
       required: false,
-      default: function _default() {
+      "default": function _default() {
         return "UTC";
       }
     },
     trans: {
       required: false,
-      default: function _default() {
+      "default": function _default() {
         return {
           duplicateDialog: {
             title: "Warning!",
@@ -125,11 +124,10 @@ exports.default = {
     }
   },
   components: {
-    pagination: _Pagination2.default,
-    sortable: _Sortable2.default,
-    "user-detail-tooltip": _UserDetailTooltip2.default
+    pagination: _Pagination["default"],
+    sortable: _Sortable["default"],
+    "user-detail-tooltip": _UserDetailTooltip["default"]
   },
-
   watch: {
     pagination: {
       handler: function handler() {
@@ -138,7 +136,6 @@ exports.default = {
       deep: true
     }
   },
-
   created: function created() {
     if (this.data != null) {
       this.populateCurrentStateAndData(this.data);
@@ -147,15 +144,16 @@ exports.default = {
     }
 
     var _this = this;
+
     setInterval(function () {
-      _this.now = (0, _moment2.default)().tz(_this.timezone).format("YYYY-MM-DD HH:mm:ss");
+      _this.now = (0, _moment["default"])().tz(_this.timezone).format("YYYY-MM-DD HH:mm:ss");
     }, 1000);
   },
-
   computed: {
     isClickedAll: {
       get: function get() {
         var dummy = this.dummy; //we hack pagination watcher don't recalculate computed property
+
         return this.clickedBulkItemsCount >= this.pagination.state.to - this.pagination.state.from + 1 && this.clickedBulkItemsCount > 0 && this.allClickedItemsAreSame();
       },
       set: function set(clicked) {}
@@ -166,39 +164,37 @@ exports.default = {
       }).length;
     }
   },
-
   filters: {
-    date: function date(date) {
+    date: function date(_date) {
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "YYYY-MM-DD";
+      return function (_date) {
+        var _date = (0, _moment["default"])(_date);
 
-      var date = (0, _moment2.default)(date);
-      return date.isValid() ? date.format(format) : "";
+        return _date.isValid() ? _date.format(format) : "";
+      }(_date);
     },
     datetime: function datetime(_datetime) {
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "YYYY-MM-DD HH:mm:ss";
-
-      var date = (0, _moment2.default)(_datetime);
+      var date = (0, _moment["default"])(_datetime);
       return date.isValid() ? date.format(format) : "";
     },
     time: function time(_time) {
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "HH:mm:ss";
-
       // '2000-01-01' is here just because momentjs needs a date
-      var date = (0, _moment2.default)("2000-01-01 " + _time);
+      var date = (0, _moment["default"])("2000-01-01 " + _time);
       return date.isValid() ? date.format(format) : "";
     }
   },
-
   methods: {
     allClickedItemsAreSame: function allClickedItemsAreSame() {
       var itemsInPaginationIds = Object.values(this.collection).map(function (_ref) {
         var id = _ref.id;
         return id;
-      });
+      }); //for loop is used because you can't return false in .forEach() method
 
-      //for loop is used because you can't return false in .forEach() method
       for (var i = 0; i < itemsInPaginationIds.length; i++) {
         var itemInPaginationId = itemsInPaginationIds[i];
+
         if (this.bulkItems[itemInPaginationId] === undefined || this.bulkItems[itemInPaginationId] === false) {
           return false;
         }
@@ -217,10 +213,8 @@ exports.default = {
           bulk: true
         }
       };
-
       this.bulkCheckingAllLoader = true;
       Object.assign(options.params, this.filters);
-
       axios.get(url, options).then(function (response) {
         _this2.checkAllItems(response.data.bulkItems);
       }, function (error) {
@@ -229,7 +223,7 @@ exports.default = {
           title: "Error!",
           text: error.response.data.message ? error.response.data.message : "An error has occured."
         });
-      }).finally(function () {
+      })["finally"](function () {
         _this2.bulkCheckingAllLoader = false;
       });
     },
@@ -238,6 +232,7 @@ exports.default = {
         var id = _ref2.id;
         return id;
       });
+
       if (!this.isClickedAll) {
         this.bulkCheckingAllLoader = true;
         this.checkAllItems(itemsInPagination);
@@ -274,21 +269,25 @@ exports.default = {
 
       var itemsToDelete = Object.keys(pickBy(this.bulkItems));
       var self = this;
-
       this.$modal.show("dialog", {
         title: "Warning!",
-        text: "Do you really want to delete " + this.clickedBulkItemsCount + " selected items ?",
-        buttons: [{ title: "No, cancel." }, {
+        text: "Do you really want to delete ".concat(this.clickedBulkItemsCount, " selected items ?"),
+        buttons: [{
+          title: "No, cancel."
+        }, {
           title: '<span class="btn-dialog btn-danger">Yes, delete.<span>',
           handler: function handler() {
             _this5.$modal.hide("dialog");
+
             axios.post(url, {
               data: {
                 ids: itemsToDelete
               }
             }).then(function (response) {
               self.bulkItems = {};
+
               _this5.loadData();
+
               _this5.$notify({
                 type: "success",
                 title: "Success!",
@@ -322,11 +321,9 @@ exports.default = {
       }
 
       Object.assign(options.params, this.filters);
-
       axios.get(this.url, options).then(function (response) {
         return _this6.populateCurrentStateAndData(response.data.data);
-      }, function (error) {
-        // TODO handle error
+      }, function (error) {// TODO handle error
       });
     },
     filter: function filter(column, value) {
@@ -334,8 +331,9 @@ exports.default = {
         delete this.filters[column];
       } else {
         this.filters[column] = value;
-      }
-      // when we change filter, we must reset pagination, because the total items count may has changed
+      } // when we change filter, we must reset pagination, because the total items count may has changed
+
+
       this.loadData(true);
     },
     populateCurrentStateAndData: function populateCurrentStateAndData(object) {
@@ -359,12 +357,16 @@ exports.default = {
       this.$modal.show("dialog", {
         title: "Warning!",
         text: "Do you really want to delete this item?",
-        buttons: [{ title: "No, cancel." }, {
+        buttons: [{
+          title: "No, cancel."
+        }, {
           title: '<span class="btn-dialog btn-danger">Yes, delete.<span>',
           handler: function handler() {
             _this7.$modal.hide("dialog");
-            axios.delete(url).then(function (response) {
+
+            axios["delete"](url).then(function (response) {
               _this7.loadData();
+
               _this7.$notify({
                 type: "success",
                 title: "Success!",
@@ -392,6 +394,7 @@ exports.default = {
         });
       }, function (error) {
         row[col] = !row[col];
+
         _this8.$notify({
           type: "error",
           title: "Error!",
@@ -399,22 +402,25 @@ exports.default = {
         });
       });
     },
-
-
     publishNow: function publishNow(url, row, dialogType) {
       var _this = this;
-      if (!dialogType) dialogType = "publishNowDialog";
 
+      if (!dialogType) dialogType = "publishNowDialog";
       this.$modal.show("dialog", {
         title: _this.trans[dialogType].title,
         text: _this.trans[dialogType].text,
-        buttons: [{ title: _this.trans[dialogType].no }, {
+        buttons: [{
+          title: _this.trans[dialogType].no
+        }, {
           title: '<span class="btn-dialog btn-success">' + _this.trans[dialogType].yes + "<span>",
           handler: function handler() {
             _this.$modal.hide("dialog");
 
-            axios.post(url, { publish_now: true }).then(function (response) {
+            axios.post(url, {
+              publish_now: true
+            }).then(function (response) {
               row.published_at = response.data.object.published_at;
+
               _this.$notify({
                 type: "success",
                 title: "Success!",
@@ -431,22 +437,26 @@ exports.default = {
         }]
       });
     },
-
     unpublishNow: function unpublishNow(url, row, additionalWarning) {
       var _this = this;
-      var dialogType = "unpublishNowDialog";
 
+      var dialogType = "unpublishNowDialog";
       this.$modal.show("dialog", {
         title: _this.trans[dialogType].title,
         text: _this.trans[dialogType].text + (additionalWarning ? '<br /><span class="text-danger">' + additionalWarning + "</span>" : ""),
-        buttons: [{ title: _this.trans[dialogType].no }, {
+        buttons: [{
+          title: _this.trans[dialogType].no
+        }, {
           title: '<span class="btn-dialog btn-danger">' + _this.trans[dialogType].yes + "<span>",
           handler: function handler() {
             _this.$modal.hide("dialog");
 
-            axios.post(url, { unpublish_now: true }).then(function (response) {
+            axios.post(url, {
+              unpublish_now: true
+            }).then(function (response) {
               row.published_at = response.data.object.published_at;
               row.published_to = response.data.object.published_to;
+
               _this.$notify({
                 type: "success",
                 title: "Success!",
@@ -463,11 +473,10 @@ exports.default = {
         }]
       });
     },
-
     publishLater: function publishLater(url, row, dialogType) {
       var _this = this;
-      if (!dialogType) dialogType = "publishLaterDialog";
 
+      if (!dialogType) dialogType = "publishLaterDialog";
       this.$modal.show({
         template: "\n                    <div class=\"vue-dialog\">\n                        <div class=\"card-body\">\n                            <p>{{ trans.text }}</p>\n                            <div class=\"form-group row align-items-center\">\n                                <div class=\"col\">\n                                    <datetime \n                                        \n                                        v-model=\"mutablePublishedAt\"\n                                        :config=\"datetimePickerConfig\" \n                                        v-validate=\"'date_format:yyyy-MM-dd HH:mm:ss'\" \n                                        class=\"flatpickr\" \n                                        >\n                                    </datetime>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"col\">\n                                    <button class=\"col btn btn-secondary\" @click=\"$emit('close')\">{{trans.no}}</button>                            \n                                </div>\n                                <div class=\"col\">\n                                    <button class=\"col btn btn-success\" type=\"button\" @click=\"save(mutablePublishedAt)\">{{trans.yes}}</button>\n                                </div>\n                            </div>\n                        </div>                \n                    </div>                \n                ",
         props: ["trans", "published_at", "datetimePickerConfig", "save"],
@@ -483,8 +492,11 @@ exports.default = {
         save: function save(mutablePublishedAt) {
           _this.$modal.hide("PublishLaterDialog");
 
-          axios.post(url, { published_at: mutablePublishedAt }).then(function (response) {
+          axios.post(url, {
+            published_at: mutablePublishedAt
+          }).then(function (response) {
             row.published_at = response.data.object.published_at;
+
             _this.$notify({
               type: "success",
               title: "Success!",
@@ -506,3 +518,4 @@ exports.default = {
     }
   }
 };
+exports["default"] = _default2;
