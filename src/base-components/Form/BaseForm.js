@@ -261,8 +261,13 @@ const BaseForm = {
       }
       this.form["wysiwygMedia"] = this.wysiwygMedia;
 
-      return this.form;
+      return this.preparePayload(this.form);
     },
+
+    preparePayload(form) {
+      return form;
+    },
+
     onSubmit() {
       return this.$validator.validateAll().then((result) => {
         if (!result) {
@@ -274,13 +279,14 @@ const BaseForm = {
           return false;
         }
 
-        var data = this.form;
-        if (!this.sendEmptyLocales) {
-          data = omit(
-            this.form,
-            this.locales.filter((locale) => isEmpty(this.form[locale]))
-          );
-        }
+        // I'm not seeing anything that uses this data
+        // var data = this.form;
+        // if (!this.sendEmptyLocales) {
+        //   data = omit(
+        //     this.form,
+        //     this.locales.filter((locale) => isEmpty(this.form[locale]))
+        //   );
+        // }
 
         this.submiting = true;
 

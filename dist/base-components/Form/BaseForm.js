@@ -292,7 +292,10 @@ var BaseForm = {
       }
       this.form["wysiwygMedia"] = this.wysiwygMedia;
 
-      return this.form;
+      return this.preparePayload(this.form);
+    },
+    preparePayload: function preparePayload(form) {
+      return form;
     },
     onSubmit: function onSubmit() {
       var _this4 = this;
@@ -307,12 +310,14 @@ var BaseForm = {
           return false;
         }
 
-        var data = _this4.form;
-        if (!_this4.sendEmptyLocales) {
-          data = omit(_this4.form, _this4.locales.filter(function (locale) {
-            return isEmpty(_this4.form[locale]);
-          }));
-        }
+        // I'm not seeing anything that uses this data
+        // var data = this.form;
+        // if (!this.sendEmptyLocales) {
+        //   data = omit(
+        //     this.form,
+        //     this.locales.filter((locale) => isEmpty(this.form[locale]))
+        //   );
+        // }
 
         _this4.submiting = true;
 
